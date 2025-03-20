@@ -1,21 +1,17 @@
 {
-  "name": "lmlmailer",
+  "name": "lmlmailer-serverless",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Melbourne Gig Guide Email System (Serverless)",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "test": "cd client && npm test"
   },
-  "keywords": [],
+  "keywords": [
+    "serverless",
+    "react",
+    "lml"
+  ],
   "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@google-cloud/translate": "^9.0.1",
-    "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "node-cron": "^3.0.3",
-    "node-fetch": "^3.3.2",
-    "qrcode": "^1.5.4",
-    "sqlite3": "^5.1.7"
-  }
+  "license": "ISC"
 }
