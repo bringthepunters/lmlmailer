@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllSubscribers, getAllContentLogs, initializeStorage } from '../utils/localStorage';
+import { getAllSubscribers, getAllContentLogs, initializeStorage, createSubscriber } from '../utils/localStorage';
 import { generateContentForSubscriber } from '../utils/contentGenerator';
 import testGenerateContent from '../utils/testContentGeneration';
 
@@ -164,14 +164,14 @@ function Dashboard() {
         <div className="action-card">
           <h3>Quick Actions</h3>
           <div className="action-links">
-            <Link to="/subscribers/new" className="action-link">
-              Add New Subscriber
+            <Link to="/subscribers/new" className="action-link action-add">
+              <span className="action-icon">➕</span> Add New Subscriber
             </Link>
             <button
               onClick={handleGenerateContent}
-              className="action-link"
+              className="action-link action-generate"
             >
-              Generate Today's Content
+              <span className="action-icon">📧</span> Generate Today's Content
             </button>
             <button
               onClick={async () => {
@@ -191,13 +191,38 @@ function Dashboard() {
                   alert(`Error: ${err.message}`);
                 }
               }}
-              className="action-link"
-              style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}
+              className="action-link action-test"
             >
-              Debug: Generate for First Subscriber
+              <span className="action-icon">🔍</span> Generate for First Subscriber
             </button>
-            <Link to="/content" className="action-link">
-              View Content Logs
+            <button
+              onClick={() => {
+                try {
+                  // Create a test subscriber
+                  const testSubscriber = {
+                    name: 'Test Subscriber',
+                    email: 'test@example.com',
+                    latitude: -37.8136, // Melbourne CBD
+                    longitude: 144.9631,
+                    languages: ['en'],
+                    days: ['monday'],
+                    active: 1
+                  };
+                  
+                  createSubscriber(testSubscriber);
+                  alert('Test subscriber created successfully!');
+                  window.location.reload();
+                } catch (err) {
+                  console.error('Error creating test subscriber:', err);
+                  alert(`Error: ${err.message}`);
+                }
+              }}
+              className="action-link action-add-test"
+            >
+              <span className="action-icon">👤</span> Add Test Subscriber
+            </button>
+            <Link to="/content" className="action-link action-view">
+              <span className="action-icon">📋</span> View Content Logs
             </Link>
           </div>
         </div>
@@ -235,30 +260,37 @@ function Dashboard() {
         
         .stat-card {
           background-color: white;
-          border-radius: 8px;
+          border-radius: 12px;
           padding: 1.5rem;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
           display: flex;
           flex-direction: column;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          border-top: 4px solid #f44336;
+        }
+        
+        .stat-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
         }
         
         .stat-card h3 {
           font-size: 1rem;
-          font-weight: 500;
-          color: #757575;
+          font-weight: 600;
+          color: #555;
           margin-bottom: 0.5rem;
         }
         
         .stat-value {
-          font-size: 2.5rem;
+          font-size: 2.75rem;
           font-weight: 700;
-          color: #333;
+          color: #222;
           margin-bottom: 0.5rem;
         }
         
         .stat-detail {
           font-size: 0.875rem;
-          color: #757575;
+          color: #666;
           margin-top: auto;
         }
         
@@ -267,7 +299,16 @@ function Dashboard() {
           color: #f44336;
           text-decoration: none;
           font-size: 0.875rem;
-          font-weight: 500;
+          font-weight: 600;
+          display: inline-block;
+          padding: 0.5rem 0;
+          border-top: 1px solid #f0f0f0;
+          width: 100%;
+          transition: color 0.2s ease;
+        }
+        
+        .stat-link:hover {
+          color: #d32f2f;
         }
         
         .dashboard-actions {
@@ -278,43 +319,90 @@ function Dashboard() {
         
         .action-card {
           background-color: white;
-          border-radius: 8px;
+          border-radius: 12px;
           padding: 1.5rem;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         
         .action-card h3 {
           font-size: 1.25rem;
-          font-weight: 500;
-          color: #333;
-          margin-bottom: 1rem;
+          font-weight: 600;
+          color: #222;
+          margin-bottom: 1.25rem;
           border-bottom: 1px solid #eaeaea;
-          padding-bottom: 0.5rem;
+          padding-bottom: 0.75rem;
         }
         
         .action-links {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 0.75rem;
         }
         
         .action-link {
-          display: block;
-          padding: 0.75rem;
-          background-color: #f5f5f5;
-          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          padding: 0.9rem 1rem;
+          border-radius: 8px;
           text-decoration: none;
           color: #333;
           font-weight: 500;
-          transition: background-color 0.2s ease;
+          transition: all 0.2s ease;
           border: none;
           text-align: left;
           cursor: pointer;
           font-size: 1rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
-        .action-link:hover {
-          background-color: #e0e0e0;
+        .action-icon {
+          margin-right: 10px;
+          font-size: 1.2rem;
+        }
+        
+        .action-add {
+          background-color: #e3f2fd;
+          color: #0d47a1;
+        }
+        
+        .action-add:hover {
+          background-color: #bbdefb;
+        }
+        
+        .action-generate {
+          background-color: #e8f5e9;
+          color: #2e7d32;
+        }
+        
+        .action-generate:hover {
+          background-color: #c8e6c9;
+        }
+        
+        .action-test {
+          background-color: #fff3e0;
+          color: #e65100;
+        }
+        
+        .action-test:hover {
+          background-color: #ffe0b2;
+        }
+        
+        .action-add-test {
+          background-color: #f3e5f5;
+          color: #6a1b9a;
+        }
+        
+        .action-add-test:hover {
+          background-color: #e1bee7;
+        }
+        
+        .action-view {
+          background-color: #e8eaf6;
+          color: #283593;
+        }
+        
+        .action-view:hover {
+          background-color: #c5cae9;
         }
         
         .help-item {

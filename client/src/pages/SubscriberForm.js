@@ -8,26 +8,7 @@ import {
 
 // Supported languages
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English' },
-  { code: 'zh-CN', name: 'Simplified Chinese (Mandarin)' },
-  { code: 'zh-TW', name: 'Traditional Chinese (Cantonese)' },
-  { code: 'ar', name: 'Arabic' },
-  { code: 'vi', name: 'Vietnamese' },
-  { code: 'es', name: 'Spanish' },
-  { code: 'hi', name: 'Hindi' },
-  { code: 'ko', name: 'Korean' },
-  { code: 'ja', name: 'Japanese' }
-];
-
-// Days of week
-const DAYS_OF_WEEK = [
-  { value: 'monday', label: 'Monday' },
-  { value: 'tuesday', label: 'Tuesday' },
-  { value: 'wednesday', label: 'Wednesday' },
-  { value: 'thursday', label: 'Thursday' },
-  { value: 'friday', label: 'Friday' },
-  { value: 'saturday', label: 'Saturday' },
-  { value: 'sunday', label: 'Sunday' }
+  { code: 'en', name: 'English' }
 ];
 
 function SubscriberForm() {
@@ -41,7 +22,6 @@ function SubscriberForm() {
     latitude: -37.8136, // Default: Melbourne CBD
     longitude: 144.9631,
     languages: ['en'], // Default: English
-    days: ['monday'], // Default: Monday
     active: true
   });
   
@@ -71,7 +51,6 @@ function SubscriberForm() {
         latitude: subscriber.latitude,
         longitude: subscriber.longitude,
         languages: subscriber.languages,
-        days: subscriber.days,
         active: subscriber.active === 1
       });
       
@@ -113,26 +92,6 @@ function SubscriberForm() {
     }
   };
   
-  const handleDayChange = (e) => {
-    const { value, checked } = e.target;
-    
-    if (checked) {
-      // Add day if checked
-      setFormData({
-        ...formData,
-        days: [...formData.days, value]
-      });
-    } else {
-      // Remove day if unchecked, but ensure at least one remains
-      if (formData.days.length > 1) {
-        setFormData({
-          ...formData,
-          days: formData.days.filter(day => day !== value)
-        });
-      }
-    }
-  };
-  
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitError(null);
@@ -142,6 +101,8 @@ function SubscriberForm() {
         ...formData,
         latitude: parseFloat(formData.latitude),
         longitude: parseFloat(formData.longitude),
+        // Ensure days is set to a default
+        days: ['monday'],
         // Convert boolean active to 1/0 for consistency with server implementation
         active: formData.active ? 1 : 0
       };
@@ -229,7 +190,7 @@ function SubscriberForm() {
                 checked={formData.active}
                 onChange={handleChange}
               />
-              <label htmlFor="active">Active (will receive emails when scheduled)</label>
+              <label htmlFor="active">Active (will receive emails)</label>
             </div>
           </div>
         </div>
@@ -297,29 +258,6 @@ function SubscriberForm() {
                   disabled={formData.languages.length === 1 && formData.languages.includes(language.code)}
                 />
                 <label htmlFor={`lang-${language.code}`}>{language.name}</label>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="form-section">
-          <h3 className="section-title">Schedule</h3>
-          <p className="section-description">
-            Select days when emails should be sent. At least one day is required.
-          </p>
-          
-          <div className="checkbox-grid">
-            {DAYS_OF_WEEK.map(day => (
-              <div className="form-check" key={day.value}>
-                <input
-                  type="checkbox"
-                  id={`day-${day.value}`}
-                  value={day.value}
-                  checked={formData.days.includes(day.value)}
-                  onChange={handleDayChange}
-                  disabled={formData.days.length === 1 && formData.days.includes(day.value)}
-                />
-                <label htmlFor={`day-${day.value}`}>{day.label}</label>
               </div>
             ))}
           </div>

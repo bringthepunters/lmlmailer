@@ -205,13 +205,13 @@ export const generateQRCode = (mapUrl) => {
     // If no map URL provided, use a default
     const url = mapUrl || 'https://maps.google.com';
     
-    // Use the QR Server API to generate a QR code
-    // This is a public API that doesn't require authentication
-    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+    // Use the QR Server API to generate a QR code with smaller size
+    // Using 100x100 for smaller QR codes
+    return `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(url)}&margin=1&qzone=1`;
   } catch (error) {
     console.error('Error generating QR code:', error);
     // Return a fallback URL in case of error
-    return 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fmaps.google.com';
+    return 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fmaps.google.com&margin=1&qzone=1';
   }
 };
 
@@ -269,49 +269,57 @@ export const formatGigText = (gigs, subscriber) => {
   
   const musicSceneDescription = generateMelbourneMusicSceneDescription();
   
-  let text = `MELBOURNE GIG GUIDE - ${date}\n\n`;
+  let text = `=== MELBOURNE GIG GUIDE - ${date} ===\n\n`;
   text += `${musicSceneDescription}\n\n`;
-  text += `GIGS NEAR YOU:\n\n`;
+  text += `--- GIGS NEAR YOU ---\n\n`;
   
   gigs.forEach((gig, index) => {
-    text += `${index + 1}. ${gig.name}\n`;
-    text += `   Venue: ${gig.venue.name}\n`;
-    text += `   Address: ${gig.venue.address}\n`;
-    text += `   Time: ${gig.start_time || 'TBA'}\n`;
-    
-    if (gig.prices && gig.prices.length > 0) {
-      text += `   Price: ${gig.prices[0].price}\n`;
-    } else if (gig.information_tags && gig.information_tags.includes('Free')) {
-      text += `   Price: Free\n`;
-    } else {
-      text += `   Price: Check venue\n`;
-    }
-    
-    if (gig.genre_tags && gig.genre_tags.length > 0) {
-      text += `   Genres: ${gig.genre_tags.join(', ')}\n`;
-    }
-    
-    // Add distance info
-    if (gig.distance) {
-      text += `   Distance: ${gig.distance.toFixed(1)} km from your location\n`;
-    }
-    
-    // Get the map URL
     const mapUrl = gig.venue.location_url || `https://maps.google.com/?q=${gig.venue.latitude},${gig.venue.longitude}`;
-    
-    // Generate QR code for the map URL
     const qrCodeUrl = generateQRCode(mapUrl);
     
-    // Add map link and QR code URL
-    text += `   Map: ${mapUrl}\n`;
-    text += `   QR Code: ${qrCodeUrl}\n`;
+    // Format price
+    let priceText = "Check venue";
+    if (gig.prices && gig.prices.length > 0) {
+      priceText = gig.prices[0].price;
+    } else if (gig.information_tags && gig.information_tags.includes('Free')) {
+      priceText = "Free";
+    }
     
-    text += '\n';
+    // Format genres
+    let genresText = "";
+    if (gig.genre_tags && gig.genre_tags.length > 0) {
+      genresText = gig.genre_tags.join(', ');
+    }
+    
+    // Format distance
+    let distanceText = "";
+    if (gig.distance) {
+      distanceText = `${gig.distance.toFixed(1)} km away`;
+    }
+    
+    text += `▶ ${index + 1}. ${gig.name}\n`;
+    text += `   🏢 ${gig.venue.name} | ${distanceText}\n`;
+    text += `   📍 ${gig.venue.address}\n`;
+    text += `   🕒 ${gig.start_time || 'TBA'} | 💲 ${priceText}\n`;
+    
+    if (genresText) {
+      text += `   🎵 ${genresText}\n`;
+    }
+    
+    // More compact QR code presentation
+    text += `   🗺️ ${mapUrl}\n`;
+    text += `   QR: ${qrCodeUrl}\n`;
+    text += `   ----------------------\n`;
   });
   
+  text += `\n=== HOW TO USE ===\n`;
+  text += `• View on mobile to scan QR codes directly from screen\n`;
+  text += `• QR codes link to venue locations on Google Maps\n`;
+  text += `• Share this guide with friends!\n\n`;
+  
   text += `---\n`;
-  text += `This email was sent to ${subscriber.name} at ${subscriber.email}.\n`;
-  text += `You're receiving this because you subscribed to Melbourne Gig Guide updates.\n`;
+  text += `This information was sent to ${subscriber.name} at ${subscriber.email}.\n`;
+  text += `Melbourne Gig Guide - Supporting local music and venues.\n`;
   
   return text;
 };

@@ -191,6 +191,24 @@ function ContentLogs() {
                 )}
               </div>
               
+              <div className="content-actions">
+                <button
+                  className="action-button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedLog.content);
+                    alert('Content copied to clipboard!');
+                  }}
+                >
+                  📋 Copy to Clipboard
+                </button>
+                <a
+                  className="action-button"
+                  href={`data:text/plain;charset=utf-8,${encodeURIComponent(selectedLog.content)}`}
+                  download={`melbourne-gig-guide-${selectedLog.generated_date}.txt`}
+                >
+                  💾 Download as Text File
+                </a>
+              </div>
               <div className="content-text">
                 <pre>{selectedLog.content}</pre>
               </div>
@@ -287,22 +305,52 @@ function ContentLogs() {
           line-height: 1.5;
         }
         
+        .content-actions {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 15px;
+        }
+        
+        .action-button {
+          display: inline-flex;
+          align-items: center;
+          padding: 8px 16px;
+          background-color: #f3f4f6;
+          color: #333;
+          border: none;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          font-weight: 500;
+          cursor: pointer;
+          text-decoration: none;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .action-button:hover {
+          background-color: #e1e4e8;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        
         .content-text {
           flex: 1;
           overflow-y: auto;
-          padding: 1rem;
-          background-color: #f5f5f5;
-          border-radius: 4px;
+          padding: 1.5rem;
+          background-color: #f7f8fa;
+          border-radius: 8px;
           max-height: 500px;
+          border: 1px solid #e5e7eb;
+          box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
         }
         
         .content-text pre {
           white-space: pre-wrap;
           word-break: break-word;
-          font-family: monospace;
-          font-size: 0.875rem;
-          line-height: 1.5;
+          font-family: "Consolas", "Monaco", monospace;
+          font-size: 0.9rem;
+          line-height: 1.6;
           margin: 0;
+          color: #333;
         }
         
         .empty-state {
