@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/lmlmailer/static/css/main.3aa4726f.css",
+    "main.js": "/lmlmailer/static/js/main.f98cc61d.js",
+    "index.html": "/lmlmailer/index.html",
+    "main.3aa4726f.css.map": "/lmlmailer/static/css/main.3aa4726f.css.map",
+    "main.f98cc61d.js.map": "/lmlmailer/static/js/main.f98cc61d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3aa4726f.css",
+    "static/js/main.f98cc61d.js"
+  ]
+}

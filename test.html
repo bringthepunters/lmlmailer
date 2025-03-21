@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melbourne Gig Guide - Email Content Preview</title>
+  <!-- Google Fonts - Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+      padding: 20px;
+      font-weight: 300;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    header {
+      background-color: #f44336;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .subtitle {
+      font-weight: 300;
+      opacity: 0.9;
+      letter-spacing: 0.5px;
+    }
+    
+    .content-container {
+      padding: 30px;
+    }
+    
+    .instructions {
+      background-color: #e8eaf6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .instructions h2 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #3949ab;
+    }
+    
+    .instructions ul {
+      margin-left: 20px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    button:hover {
+      background-color: #43a047;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    button svg {
+      margin-right: 8px;
+    }
+    
+    #generate-btn {
+      background-color: #2196f3;
+    }
+    
+    #generate-btn:hover {
+      background-color: #1e88e5;
+    }
+    
+    #test-view-btn {
+      background-color: #9c27b0;
+    }
+    
+    #test-view-btn:hover {
+      background-color: #8e24aa;
+    }
+    
+    .content-preview {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .content-preview pre {
+      white-space: pre-wrap;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+    
+    /* Email preview styles */
+    .email-preview {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      margin-top: 20px;
+      font-family: 'Poppins', sans-serif;
+      max-height: 600px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: none;
+    }
+    
+    .email-preview h2 {
+      color: #f44336;
+      font-size: 24px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    
+    .email-preview .date {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+    
+    .email-preview .description {
+      margin-bottom: 25px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    .email-preview .gig-list {
+      list-style: none;
+    }
+    
+    .email-preview .gig-item {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .email-preview .gig-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .email-preview .gig-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: #333;
+    }
+    
+    .email-preview .gig-venue {
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    
+    .email-preview .gig-address {
+      color: #666;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    
+    .email-preview .gig-details {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    
+    .email-preview .gig-time,
+    .email-preview .gig-price {
+      display: flex;
+      align-items: center;
+      color: #555;
+      font-size: 14px;
+    }
+    
+    .email-preview .gig-time svg,
+    .email-preview .gig-price svg {
+      margin-right: 5px;
+    }
+    
+    .email-preview .gig-genres {
+      margin: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    
+    .email-preview .genre-tag {
+      background-color: #e3f2fd;
+      color: #1976d2;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .email-preview .gig-map {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    
+    .email-preview .qr-container {
+      width: 100px;
+      height: 100px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: white;
+    }
+    
+    .email-preview .qr-code {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .email-preview .map-link {
+      color: #1976d2;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .email-preview .map-link svg {
+      margin-right: 5px;
+    }
+    
+    .email-preview .guide-footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      color: #777;
+      font-size: 14px;
+    }
+    
+    .email-preview .footer-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #555;
+    }
+    
+    .email-preview .footer-list {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .email-preview .footer-credit {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .qr-tooltip {
+      background-color: #fff3e0;
+      padding: 10px 15px;
+      border-radius: 6px;
+      border-left: 4px solid #ff9800;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .success {
+      color: #2e7d32;
+      font-weight: 500;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        border-radius: 0;
+      }
+      
+      .content-container {
+        padding: 15px;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Melbourne Gig Guide</h1>
+      <div class="subtitle">Email Content Preview</div>
+    </header>
+    
+    <div class="content-container">
+      <div class="instructions">
+        <h2>About This Tool</h2>
+        <p>This page lets you preview and copy the formatted gig guide content to paste into your email client.</p>
+        <ul>
+          <li>Click <strong>Generate Content</strong> to create new content</li>
+          <li>Click <strong>Copy to Clipboard</strong> to copy the entire text</li>
+          <li>QR codes will be visible in the final email for venue locations</li>
+        </ul>
+      </div>
+      
+      <div class="actions">
+        <button id="generate-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+          </svg>
+          Generate Content
+        </button>
+        
+        <button id="copy-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy to Clipboard
+        </button>
+        
+        <button id="test-view-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Test Email View
+        </button>
+      </div>
+      
+      <div class="content-preview">
+        <pre id="content-display">Click "Generate Content" to create example gig guide content...</pre>
+      </div>
+      
+      <!-- HTML Email Preview with actual QR codes -->
+      <div id="email-preview" class="email-preview">
+        <!-- Content will be dynamically generated here -->
+      </div>
+      
+      <div class="qr-tooltip">
+        <strong>Note:</strong> Use the "Test Email View" button to preview how the email will look with real QR codes.
+      </div>
+      
+      <div id="status" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Define a test subscriber
+      const testSubscriber = {
+        id: 'test-subscriber',
+        name: 'Test User',
+        email: 'test@example.com',
+        latitude: -37.8136,
+        longitude: 144.9631,
+        languages: ['en'],
+        days: ['monday'],
+        active: 1
+      };
+
+      // Generate example gigs
+      const generateExampleGigs = () => {
+        return [
+          {
+            id: 'gig-1',
+            name: 'The Cosmic Travelers',
+            venue: {
+              name: "The Corner Hotel",
+              address: '57 Swan Street, Richmond',
+              latitude: -37.8236,
+              longitude: 144.9975,
+              location_url: 'https://maps.app.goo.gl/2pKyampoCBNGhxVDA'
+            },
+            start_time: '20:00',
+            prices: [{ price: '$25' }],
+            genre_tags: ['Rock', 'Psychedelic'],
+            information_tags: [],
+            distance: 1.8
+          },
+          {
+            id: 'gig-2',
+            name: 'Jazz Fusion Collective',
+            venue: {
+              name: 'Paris Cat Jazz Club',
+              address: '6 Goldie Place, Melbourne',
+              latitude: -37.8119,
+              longitude: 144.9567,
+              location_url: 'https://maps.app.goo.gl/3pLyamqoCBNGhxVDB'
+            },
+            start_time: '19:30',
+            prices: [{ price: '$30' }],
+            genre_tags: ['Jazz', 'Fusion'],
+            information_tags: [],
+            distance: 0.7
+          },
+          {
+            id: 'gig-3',
+            name: 'Electronic Beats Showcase',
+            venue: {
+              name: 'Revolver Upstairs',
+              address: '229 Chapel Street, Prahran',
+              latitude: -37.8512,
+              longitude: 144.9931,
+              location_url: 'https://maps.app.goo.gl/4qLyamroCBNGhxVDC'
+            },
+            start_time: '22:00',
+            prices: [{ price: '$15' }],
+            genre_tags: ['Electronic', 'House'],
+            information_tags: [],
+            distance: 5.2
+          }
+        ];
+      };
+
+      // Format date
+      const formatDate = () => {
+        return new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      };
+
+      // Generate QR code URL
+      const generateQRCode = (mapUrl) => {
+        try {
+          const url = mapUrl || 'https://maps.google.com';
+          return `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(url)}&margin=1&qzone=1`;
+        } catch (error) {
+          return 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fmaps.google.com&margin=1&qzone=1';
+        }
+      };
+
+      // Generate random Melbourne music scene description
+      const generateMusicSceneDescription = () => {
+        const descriptions = [
+          "Melbourne's vibrant live music scene offers everything from intimate jazz clubs to stadium rock concerts. With over 460 live music venues, it's one of the world's leading music cities.",
+          "Melbourne has a thriving live music culture, with venues ranging from historic pubs to modern performance spaces. The city hosts more live music venues per capita than any other city in the world.",
+          "Known as Australia's music capital, Melbourne's live scene spans genres from indie rock and electronic to jazz and classical. The city's diverse venues create a unique cultural tapestry for music lovers.",
+          "Melbourne's iconic music scene has launched countless careers and attracts global acts year-round. With venues scattered across unique neighborhoods, each offering its own musical flavor and atmosphere."
+        ];
+        return descriptions[Math.floor(Math.random() * descriptions.length)];
+      };
+
+      // Format gig text
+      const formatGigText = (gigs, subscriber) => {
+        const date = formatDate();
+        const musicSceneDescription = generateMusicSceneDescription();
+        
+        let text = `=== MELBOURNE GIG GUIDE - ${date} ===\n\n`;
+        text += `${musicSceneDescription}\n\n`;
+        text += `--- GIGS NEAR YOU ---\n\n`;
+        
+        gigs.forEach((gig, index) => {
+          const mapUrl = gig.venue.location_url || `https://maps.google.com/?q=${gig.venue.latitude},${gig.venue.longitude}`;
+          const qrCodeUrl = generateQRCode(mapUrl);
+          
+          // Format price
+          let priceText = "Check venue";
+          if (gig.prices && gig.prices.length > 0) {
+            priceText = gig.prices[0].price;
+          } else if (gig.information_tags && gig.information_tags.includes('Free')) {
+            priceText = "Free";
+          }
+          
+          // Format genres
+          let genresText = "";
+          if (gig.genre_tags && gig.genre_tags.length > 0) {
+            genresText = gig.genre_tags.join(', ');
+          }
+          
+          // Format distance
+          let distanceText = "";
+          if (gig.distance) {
+            distanceText = `${gig.distance.toFixed(1)} km away`;
+          }
+          
+          text += `▶ ${index + 1}. ${gig.name}\n`;
+          text += `   🏢 ${gig.venue.name} | ${distanceText}\n`;
+          text += `   📍 ${gig.venue.address}\n`;
+          text += `   🕒 ${gig.start_time || 'TBA'} | 💲 ${priceText}\n`;
+          
+          if (genresText) {
+            text += `   🎵 ${genresText}\n`;
+          }
+          
+          // More compact QR code presentation
+          text += `   🗺️ ${mapUrl}\n`;
+          text += `   QR: ${qrCodeUrl}\n`;
+          text += `   ----------------------\n`;
+        });
+        
+        text += `\n=== HOW TO USE ===\n`;
+        text += `• View on mobile to scan QR codes directly from screen\n`;
+        text += `• QR codes link to venue locations on Google Maps\n`;
+        text += `• Share this guide with friends!\n\n`;
+        
+        text += `---\n`;
+        text += `This information was sent to ${subscriber.name} at ${subscriber.email}.\n`;
+        text += `Melbourne Gig Guide - Supporting local music and venues.\n`;
+        
+        return text;
+      };
+
+      // Generate HTML email preview with real QR codes
+      const generateEmailPreview = (gigs, subscriber) => {
+        const date = formatDate();
+        const musicSceneDescription = generateMusicSceneDescription();
+        const emailPreview = document.getElementById('email-preview');
+        
+        // Clear previous content
+        emailPreview.innerHTML = '';
+        
+        // Create header
+        const header = document.createElement('h2');
+        header.textContent = 'MELBOURNE GIG GUIDE';
+        emailPreview.appendChild(header);
+        
+        const dateElement = document.createElement('div');
+        dateElement.className = 'date';
+        dateElement.textContent = date;
+        emailPreview.appendChild(dateElement);
+        
+        const description = document.createElement('div');
+        description.className = 'description';
+        description.textContent = musicSceneDescription;
+        emailPreview.appendChild(description);
+        
+        // Create gig list
+        const gigList = document.createElement('ul');
+        gigList.className = 'gig-list';
+        
+        gigs.forEach((gig, index) => {
+          const gigItem = document.createElement('li');
+          gigItem.className = 'gig-item';
+          
+          // Gig header with title and number
+          const gigHeader = document.createElement('div');
+          gigHeader.className = 'gig-header';
+          
+          const gigTitle = document.createElement('div');
+          gigTitle.className = 'gig-title';
+          gigTitle.textContent = `${index + 1}. ${gig.name}`;
+          gigHeader.appendChild(gigTitle);
+          
+          gigItem.appendChild(gigHeader);
+          
+          // Venue and distance
+          const venueElement = document.createElement('div');
+          venueElement.className = 'gig-venue';
+          venueElement.innerHTML = `${gig.venue.name} <span style="opacity: 0.7; font-weight: 400; margin-left: 5px;">${gig.distance.toFixed(1)} km away</span>`;
+          gigItem.appendChild(venueElement);
+          
+          // Address
+          const addressElement = document.createElement('div');
+          addressElement.className = 'gig-address';
+          addressElement.textContent = gig.venue.address;
+          gigItem.appendChild(addressElement);
+          
+          // Time and price details
+          const detailsElement = document.createElement('div');
+          detailsElement.className = 'gig-details';
+          
+          // Time
+          const timeElement = document.createElement('div');
+          timeElement.className = 'gig-time';
+          timeElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> ${gig.start_time || 'TBA'}`;
+          detailsElement.appendChild(timeElement);
+          
+          // Price
+          let priceText = "Check venue";
+          if (gig.prices && gig.prices.length > 0) {
+            priceText = gig.prices[0].price;
+          } else if (gig.information_tags && gig.information_tags.includes('Free')) {
+            priceText = "Free";
+          }
+          
+          const priceElement = document.createElement('div');
+          priceElement.className = 'gig-price';
+          priceElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg> ${priceText}`;
+          detailsElement.appendChild(priceElement);
+          
+          gigItem.appendChild(detailsElement);
+          
+          // Genres
+          if (gig.genre_tags && gig.genre_tags.length > 0) {
+            const genresContainer = document.createElement('div');
+            genresContainer.className = 'gig-genres';
+            
+            gig.genre_tags.forEach(genre => {
+              const genreTag = document.createElement('span');
+              genreTag.className = 'genre-tag';
+              genreTag.textContent = genre;
+              genresContainer.appendChild(genreTag);
+            });
+            
+            gigItem.appendChild(genresContainer);
+          }
+          
+          // Map and QR code
+          const mapUrl = gig.venue.location_url || `https://maps.google.com/?q=${gig.venue.latitude},${gig.venue.longitude}`;
+          const qrCodeUrl = generateQRCode(mapUrl);
+          
+          const mapContainer = document.createElement('div');
+          mapContainer.className = 'gig-map';
+          
+          // Map link
+          const mapLink = document.createElement('a');
+          mapLink.href = mapUrl;
+          mapLink.className = 'map-link';
+          mapLink.target = '_blank';
+          mapLink.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> View on Map`;
+          mapContainer.appendChild(mapLink);
+          
+          // QR Code (actual image)
+          const qrContainer = document.createElement('div');
+          qrContainer.className = 'qr-container';
+          
+          const qrImage = document.createElement('img');
+          qrImage.src = qrCodeUrl;
+          qrImage.alt = 'QR Code for venue location';
+          qrImage.className = 'qr-code';
+          
+          qrContainer.appendChild(qrImage);
+          mapContainer.appendChild(qrContainer);
+          
+          gigItem.appendChild(mapContainer);
+          gigList.appendChild(gigItem);
+        });
+        
+        emailPreview.appendChild(gigList);
+        
+        // Footer
+        const footer = document.createElement('div');
+        footer.className = 'guide-footer';
+        
+        const footerTitle = document.createElement('div');
+        footerTitle.className = 'footer-title';
+        footerTitle.textContent = 'HOW TO USE';
+        footer.appendChild(footerTitle);
+        
+        const footerList = document.createElement('ul');
+        footerList.className = 'footer-list';
+        
+        const items = [
+          'View on mobile to scan QR codes directly from screen',
+          'QR codes link to venue locations on Google Maps',
+          'Share this guide with friends!'
+        ];
+        
+        items.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          footerList.appendChild(li);
+        });
+        
+        footer.appendChild(footerList);
+        
+        const credit = document.createElement('div');
+        credit.className = 'footer-credit';
+        credit.textContent = `This information was sent to ${subscriber.name} at ${subscriber.email}. Melbourne Gig Guide - Supporting local music and venues.`;
+        footer.appendChild(credit);
+        
+        emailPreview.appendChild(footer);
+        
+        // Show the preview
+        emailPreview.style.display = 'block';
+      };
+
+      // Generate content function
+      const generateContent = () => {
+        const gigs = generateExampleGigs();
+        const content = formatGigText(gigs, testSubscriber);
+        document.getElementById('content-display').textContent = content;
+        
+        // Hide email preview when generating text content
+        document.getElementById('email-preview').style.display = 'none';
+        
+        setStatus('Content generated successfully!', true);
+      };
+
+      // Show the email preview with real QR codes
+      const showEmailPreview = () => {
+        const gigs = generateExampleGigs();
+        generateEmailPreview(gigs, testSubscriber);
+        setStatus('Email preview with real QR codes displayed!', true);
+      };
+
+      // Copy content to clipboard
+      const copyToClipboard = () => {
+        const content = document.getElementById('content-display').textContent;
+        navigator.clipboard.writeText(content)
+          .then(() => {
+            setStatus('Content copied to clipboard!', true);
+          })
+          .catch(err => {
+            setStatus('Failed to copy: ' + err, false);
+          });
+      };
+
+      // Set status message
+      const setStatus = (message, isSuccess = true) => {
+        const statusElement = document.getElementById('status');
+        statusElement.textContent = message;
+        statusElement.className = isSuccess ? 'status success' : 'status error';
+        
+        // Clear status after 3 seconds
+        setTimeout(() => {
+          statusElement.textContent = '';
+          statusElement.className = 'status';
+        }, 3000);
+      };
+
+      // Add event listeners
+      document.getElementById('generate-btn').addEventListener('click', generateContent);
+      document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+      document.getElementById('test-view-btn').addEventListener('click', showEmailPreview);
+    });
+  </script>
+</body>
+</html>
