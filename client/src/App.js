@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 
 // Pages
@@ -7,11 +7,27 @@ import SubscriberList from './pages/SubscriberList';
 import SubscriberForm from './pages/SubscriberForm';
 import ContentLogs from './pages/ContentLogs';
 
+// Utils
+import testGenerateContent from './utils/testContentGeneration';
+import { initializeStorage } from './utils/localStorage';
+
 // LML Logo and branding
 import './App.css';
 
 function App() {
   const location = useLocation();
+  
+  // Initialize localStorage and make test function available globally
+  useEffect(() => {
+    // Initialize localStorage
+    initializeStorage();
+    
+    // Make test function available in browser console
+    window.testGenerateContent = testGenerateContent;
+    
+    console.log('Content generation test function available in console!');
+    console.log('To test content generation, run: testGenerateContent()');
+  }, []);
   
   return (
     <div className="app">

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllSubscribers, getAllContentLogs, initializeStorage } from '../utils/localStorage';
-import { generateDailyContent } from '../utils/contentGenerator';
+import { generateContentForSubscriber } from '../utils/contentGenerator';
+import testGenerateContent from '../utils/testContentGeneration';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -56,24 +57,52 @@ function Dashboard() {
     fetchDashboardData();
   }, []);
 
-  // Function to generate today's content for all active subscribers
+  // Function to generate content for all active subscribers (simplified for English only)
   const handleGenerateContent = async () => {
     try {
       setLoading(true);
       
-      // Generate content for all active subscribers
-      const result = await generateDailyContent(subscribers);
+      // Get active subscribers
+      const activeSubscribers = subscribers.filter(sub => sub.active === 1);
+      
+      if (activeSubscribers.length === 0) {
+        alert('No active subscribers found. Please add a subscriber first.');
+        setLoading(false);
+        return;
+      }
+      
+      // Get today's date
+      const date = new Date().toISOString().split('T')[0];
+      
+      // Track results
+      let successCount = 0;
+      let failedCount = 0;
+      
+      // Generate content for each active subscriber
+      for (const subscriber of activeSubscribers) {
+        try {
+          // Force English only by ensuring the subscriber has 'en' in languages
+          const subscriberWithEnglish = {
+            ...subscriber,
+            languages: ['en']
+          };
+          
+          await generateContentForSubscriber(subscriberWithEnglish, date);
+          successCount++;
+        } catch (error) {
+          console.error(`Error generating content for ${subscriber.name}:`, error);
+          failedCount++;
+        }
+      }
       
       // Refresh data after generation
       setLoading(false);
       
       // Show success message
-      alert(`${result.message}`);
+      alert(`Generated content for ${successCount} subscribers (${failedCount} failed)`);
       
       // Refresh the page to update stats
       window.location.reload();
-      
-      return result;
     } catch (err) {
       console.error('Error generating content:', err);
       setError('Failed to generate content. Please try again later.');
@@ -117,10 +146,10 @@ function Dashboard() {
         </div>
         
         <div className="stat-card">
-          <h3>Today's Schedule</h3>
-          <div className="stat-value">{stats.todaySubscribers}</div>
+          <h3>English Content</h3>
+          <div className="stat-value">{stats.activeSubscribers}</div>
           <div className="stat-detail">
-            subscribers will receive content today
+            subscribers will receive English content
           </div>
         </div>
         
@@ -138,11 +167,34 @@ function Dashboard() {
             <Link to="/subscribers/new" className="action-link">
               Add New Subscriber
             </Link>
-            <button 
+            <button
               onClick={handleGenerateContent}
               className="action-link"
             >
               Generate Today's Content
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  const result = await testGenerateContent();
+                  setLoading(false);
+                  if (result.success) {
+                    alert('Test content generation successful! Check Content Logs to view the generated content.');
+                    window.location.reload();
+                  } else {
+                    alert(`Test failed: ${result.error}`);
+                  }
+                } catch (err) {
+                  console.error('Error in test content generation:', err);
+                  setLoading(false);
+                  alert(`Error: ${err.message}`);
+                }
+              }}
+              className="action-link"
+              style={{ backgroundColor: '#e8f5e9', color: '#2e7d32' }}
+            >
+              Debug: Generate for First Subscriber
             </button>
             <Link to="/content" className="action-link">
               View Content Logs
@@ -160,7 +212,12 @@ function Dashboard() {
             <div className="help-item">
               <h4>LML API</h4>
               <p>Connected to api.lml.live</p>
-              <a href="https://api.lml.live/gigs" target="_blank" rel="noreferrer" className="help-link">
+              <a
+                href="https://api.lml.live/gigs/query?location=melbourne&date_from=2024-07-01&date_to=2024-07-19"
+                target="_blank"
+                rel="noreferrer"
+                className="help-link"
+              >
                 Test API Connection
               </a>
             </div>

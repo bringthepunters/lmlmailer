@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Generation Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .button {
+      display: inline-block;
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .button:hover {
+      background-color: #d32f2f;
+    }
+    .log-container {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      height: 300px;
+      overflow-y: auto;
+    }
+    .log-entry {
+      margin: 5px 0;
+      font-family: monospace;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Content Generation Test</h1>
+  <p>This page tests the content generation functionality of the Melbourne Gig Guide Mailer.</p>
+  
+  <button id="runTest" class="button">Run Content Generation Test</button>
+  <a href="/" class="button" style="background-color: #757575;">Back to Dashboard</a>
+  
+  <div class="log-container" id="logContainer">
+    <div class="log-entry">Click "Run Content Generation Test" to start the test...</div>
+  </div>
+  
+  <script>
+    // Function to add log entry
+    function addLog(message, isError = false) {
+      const logContainer = document.getElementById('logContainer');
+      const logEntry = document.createElement('div');
+      logEntry.className = `log-entry ${isError ? 'error' : ''}`;
+      logEntry.textContent = message;
+      logContainer.appendChild(logEntry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+    
+    // Override console.log and console.error
+    const originalConsoleLog = console.log;
+    const originalConsoleError = console.error;
+    
+    console.log = function() {
+      originalConsoleLog.apply(console, arguments);
+      addLog(Array.from(arguments).join(' '));
+    };
+    
+    console.error = function() {
+      originalConsoleError.apply(console, arguments);
+      addLog(Array.from(arguments).join(' '), true);
+    };
+    
+    // Add event listener to run test button
+    document.getElementById('runTest').addEventListener('click', function() {
+      addLog('Loading test script...');
+      
+      // Load the main app script to get access to the testGenerateContent function
+      const appScript = document.createElement('script');
+      appScript.src = '/static/js/main.js';
+      appScript.onload = function() {
+        addLog('Main app script loaded, waiting for initialization...');
+        
+        // Wait for the app to initialize and make testGenerateContent available
+        const checkInterval = setInterval(function() {
+          if (typeof window.testGenerateContent === 'function') {
+            clearInterval(checkInterval);
+            addLog('testGenerateContent function found, loading test script...');
+            
+            // Load and run the test script
+            const testScript = document.createElement('script');
+            testScript.src = '/test-content.js';
+            document.body.appendChild(testScript);
+          }
+        }, 500);
+        
+        // Timeout after 10 seconds
+        setTimeout(function() {
+          clearInterval(checkInterval);
+          addLog('Timeout waiting for testGenerateContent function. Make sure the app is properly initialized.', true);
+        }, 10000);
+      };
+      
+      appScript.onerror = function() {
+        addLog('Failed to load main app script. Make sure the app is running.', true);
+      };
+      
+      document.body.appendChild(appScript);
+    });
+  </script>
+</body>
+</html>
