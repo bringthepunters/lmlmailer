@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getAllSubscribers, getAllContentLogs, initializeStorage, createSubscriber } from '../utils/localStorage';
 import { generateContentForSubscriber } from '../utils/contentGenerator';
 import testGenerateContent from '../utils/testContentGeneration';
+import EmailPreview from '../components/EmailPreview';
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -14,6 +15,9 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [subscribers, setSubscribers] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewContent, setPreviewContent] = useState('');
+  const [previewSubscriber, setPreviewSubscriber] = useState(null);
 
   useEffect(() => {
     // Initialize localStorage if needed
@@ -221,6 +225,52 @@ function Dashboard() {
             >
               <span className="action-icon">👤</span> Add Test Subscriber
             </button>
+            <button
+              onClick={async () => {
+                try {
+                  setLoading(true);
+                  
+                  // Get or create a test subscriber
+                  let testSubscriber;
+                  const allSubscribers = getAllSubscribers();
+                  
+                  if (allSubscribers.length > 0) {
+                    testSubscriber = allSubscribers[0];
+                  } else {
+                    testSubscriber = {
+                      id: 'preview-subscriber',
+                      name: 'Test Subscriber',
+                      email: 'test@example.com',
+                      latitude: -37.8136, // Melbourne CBD
+                      longitude: 144.9631,
+                      languages: ['en'],
+                      days: ['monday'],
+                      active: 1
+                    };
+                  }
+                  
+                  // Generate content for preview without saving
+                  const date = new Date().toISOString().split('T')[0];
+                  
+                  // Access the generateContentForSubscriber function to get content
+                  const contentLog = await generateContentForSubscriber(testSubscriber, date);
+                  
+                  // Set the preview states
+                  setPreviewContent(contentLog.content);
+                  setPreviewSubscriber(testSubscriber);
+                  setShowPreview(true);
+                  
+                  setLoading(false);
+                } catch (err) {
+                  console.error('Error generating preview:', err);
+                  setLoading(false);
+                  alert(`Error: ${err.message}`);
+                }
+              }}
+              className="action-link action-preview"
+            >
+              <span className="action-icon">👁️</span> Preview Email with QR Codes
+            </button>
             <Link to="/content" className="action-link action-view">
               <span className="action-icon">📋</span> View Content Logs
             </Link>
@@ -249,6 +299,27 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      
+      {/* Email Preview Modal */}
+      {showPreview && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <div className="modal-header">
+              <h3>Email Preview with QR Codes</h3>
+              <button
+                className="modal-close"
+                onClick={() => setShowPreview(false)}
+              >×</button>
+            </div>
+            <div className="modal-body">
+              <EmailPreview
+                content={previewContent}
+                subscriber={previewSubscriber}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       
       <style jsx>{`
         .stats-container {
@@ -396,6 +467,15 @@ function Dashboard() {
           background-color: #e1bee7;
         }
         
+        .action-preview {
+          background-color: #e0f7fa;
+          color: #006064;
+        }
+        
+        .action-preview:hover {
+          background-color: #b2ebf2;
+        }
+        
         .action-view {
           background-color: #e8eaf6;
           color: #283593;
@@ -440,6 +520,68 @@ function Dashboard() {
           padding: 1rem;
           border-radius: 4px;
           margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+        }
+        
+        .modal-container {
+          background-color: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+          width: 90%;
+          max-width: 900px;
+          max-height: 90vh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        
+        .modal-header {
+          padding: 16px 20px;
+          background-color: #f5f5f5;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .modal-header h3 {
+          margin: 0;
+          font-size: 18px;
+          color: #333;
+          font-weight: 600;
+        }
+        
+        .modal-close {
+          background: none;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: #666;
+          transition: color 0.2s;
+        }
+        
+        .modal-close:hover {
+          color: #f44336;
+        }
+        
+        .modal-body {
+          padding: 20px;
+          overflow-y: auto;
+          flex: 1;
+          max-height: 70vh;
         }
       `}</style>
     </div>

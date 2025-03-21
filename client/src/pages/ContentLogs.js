@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllContentLogs, getAllSubscribers, deleteContentLog } from '../utils/localStorage';
+import EmailPreview from '../components/EmailPreview';
 
 function ContentLogs() {
   const [logs, setLogs] = useState([]);
@@ -7,6 +8,7 @@ function ContentLogs() {
   const [subscribers, setSubscribers] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -159,8 +161,8 @@ function ContentLogs() {
         
         <div className="content-preview">
           <h3 className="panel-title">
-            {selectedLog 
-              ? `Content Preview - ${formatDate(selectedLog.generated_date)}` 
+            {selectedLog
+              ? `Content Preview - ${formatDate(selectedLog.generated_date)}`
               : 'Content Preview'}
           </h3>
           
@@ -209,9 +211,34 @@ function ContentLogs() {
                   💾 Download as Text File
                 </a>
               </div>
-              <div className="content-text">
-                <pre>{selectedLog.content}</pre>
+              
+              <div className="view-tabs">
+                <button
+                  className={`tab-button ${!showEmailPreview ? 'active' : ''}`}
+                  onClick={() => setShowEmailPreview(false)}
+                >
+                  Text View
+                </button>
+                <button
+                  className={`tab-button ${showEmailPreview ? 'active' : ''}`}
+                  onClick={() => setShowEmailPreview(true)}
+                >
+                  Email Preview
+                </button>
               </div>
+              
+              {showEmailPreview ? (
+                <div className="email-preview-container">
+                  <EmailPreview
+                    content={selectedLog.content}
+                    subscriber={subscribers[selectedLog.subscriber_id]}
+                  />
+                </div>
+              ) : (
+                <div className="content-text">
+                  <pre>{selectedLog.content}</pre>
+                </div>
+              )}
             </div>
           ) : (
             <div className="empty-state">
@@ -371,6 +398,39 @@ function ContentLogs() {
           padding: 1rem;
           border-radius: 4px;
           margin-bottom: 1rem;
+        }
+        
+        .view-tabs {
+          display: flex;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #eee;
+        }
+        
+        .tab-button {
+          padding: 8px 16px;
+          background: none;
+          border: none;
+          border-bottom: 2px solid transparent;
+          font-size: 14px;
+          font-weight: 500;
+          color: #555;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .tab-button.active {
+          color: #1976d2;
+          border-bottom-color: #1976d2;
+        }
+        
+        .tab-button:hover {
+          background-color: #f5f5f5;
+        }
+        
+        .email-preview-container {
+          flex: 1;
+          overflow-y: auto;
+          max-height: 600px;
         }
         
         @media (max-width: 900px) {
