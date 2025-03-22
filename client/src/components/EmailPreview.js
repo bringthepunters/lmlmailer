@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { generateQRCode } from '../utils/contentGenerator';
 
 // Regular expressions to extract information from content text
@@ -21,6 +21,8 @@ const EmailPreview = ({ content, subscriber = { name: 'Test User', email: 'test@
     description: '',
     gigs: []
   });
+  const [copyStatus, setCopyStatus] = useState('');
+  const emailContainerRef = useRef(null);
 
   useEffect(() => {
     if (content) {
@@ -89,88 +91,186 @@ const EmailPreview = ({ content, subscriber = { name: 'Test User', email: 'test@
     });
   };
 
+  /**
+   * Copy the HTML content of the email to clipboard
+   */
+  const copyHtmlToClipboard = () => {
+    if (emailContainerRef.current) {
+      // Get the HTML content of the email preview
+      const htmlContent = emailContainerRef.current.outerHTML;
+      
+      // Create a simplified version that's more email-client friendly
+      const emailReadyHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Melbourne Gig Guide</title>
+  <style>
+    body, html {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    h2 {
+      color: #f44336;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .gig-item {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .gig-title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+    .gig-venue {
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    .genre-tag {
+      display: inline-block;
+      background-color: #e3f2fd;
+      color: #1976d2;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    .footer-credit {
+      font-size: 12px;
+      color: #999;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  ${emailContainerRef.current.innerHTML}
+</body>
+</html>
+      `.trim();
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(emailReadyHtml)
+        .then(() => {
+          setCopyStatus('HTML copied to clipboard!');
+          setTimeout(() => setCopyStatus(''), 3000);
+        })
+        .catch(err => {
+          console.error('Failed to copy HTML:', err);
+          setCopyStatus('Failed to copy HTML');
+        });
+    }
+  };
+
   if (!content) {
     return <div className="email-preview-empty">No content to preview</div>;
   }
 
   return (
     <div className="email-preview">
-      <h2>MELBOURNE GIG GUIDE</h2>
-      <div className="date">{previewData.date}</div>
+      <div className="preview-actions">
+        <button 
+          className="copy-html-btn"
+          onClick={copyHtmlToClipboard}
+        >
+          📋 Copy HTML for Email Client
+        </button>
+        {copyStatus && <span className="copy-status">{copyStatus}</span>}
+      </div>
       
-      <div className="description">{previewData.description}</div>
-      
-      <ul className="gig-list">
-        {previewData.gigs.map((gig, index) => (
-          <li key={index} className="gig-item">
-            <div className="gig-header">
-              <div className="gig-title">{gig.number}. {gig.name}</div>
-            </div>
-            
-            <div className="gig-venue">
-              {gig.venue} <span style={{ opacity: 0.7, fontWeight: 400, marginLeft: '5px' }}>{gig.distance}</span>
-            </div>
-            
-            <div className="gig-address">{gig.address}</div>
-            
-            <div className="gig-details">
-              <div className="gig-time">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg> 
-                {gig.time}
+      <div ref={emailContainerRef} className="email-container">
+        <h2>MELBOURNE GIG GUIDE</h2>
+        <div className="date">{previewData.date}</div>
+        
+        <div className="description">{previewData.description}</div>
+        
+        <ul className="gig-list">
+          {previewData.gigs.map((gig, index) => (
+            <li key={index} className="gig-item">
+              <div className="gig-header">
+                <div className="gig-title">{gig.number}. {gig.name}</div>
               </div>
               
-              <div className="gig-price">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="1" x2="12" y2="23"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg> 
-                {gig.price}
+              <div className="gig-venue">
+                {gig.venue} <span style={{ opacity: 0.7, fontWeight: 400, marginLeft: '5px' }}>{gig.distance}</span>
               </div>
-            </div>
-            
-            {gig.genres.length > 0 && (
-              <div className="gig-genres">
-                {gig.genres.map((genre, i) => (
-                  <span key={i} className="genre-tag">{genre}</span>
-                ))}
-              </div>
-            )}
-            
-            <div className="gig-map">
-              <a href={gig.mapUrl} className="map-link" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg> 
-                View on Map
-              </a>
               
-              <div className="qr-container">
-                <img 
-                  src={gig.qrCodeUrl} 
-                  alt="QR Code for venue location" 
-                  className="qr-code"
-                />
+              <div className="gig-address">{gig.address}</div>
+              
+              <div className="gig-details">
+                <div className="gig-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg> 
+                  {gig.time}
+                </div>
+                
+                <div className="gig-price">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg> 
+                  {gig.price}
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-      
-      <div className="guide-footer">
-        <div className="footer-title">HOW TO USE</div>
-        <ul className="footer-list">
-          <li>View on mobile to scan QR codes directly from screen</li>
-          <li>QR codes link to venue locations on Google Maps</li>
-          <li>Share this guide with friends!</li>
+              
+              {gig.genres.length > 0 && (
+                <div className="gig-genres">
+                  {gig.genres.map((genre, i) => (
+                    <span key={i} className="genre-tag">{genre}</span>
+                  ))}
+                </div>
+              )}
+              
+              <div className="gig-map">
+                <a href={gig.mapUrl} className="map-link" target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg> 
+                  View on Map
+                </a>
+                
+                <div className="qr-container">
+                  <img 
+                    src={gig.qrCodeUrl} 
+                    alt="QR Code for venue location" 
+                    className="qr-code"
+                  />
+                </div>
+              </div>
+            </li>
+          ))}
         </ul>
         
-        <div className="footer-credit">
-          This information was sent to {subscriber.name} at {subscriber.email}. 
-          Melbourne Gig Guide - Supporting local music and venues.
+        <div className="guide-footer">
+          <div className="footer-title">HOW TO USE</div>
+          <ul className="footer-list">
+            <li>View on mobile to scan QR codes directly from screen</li>
+            <li>QR codes link to venue locations on Google Maps</li>
+            <li>Share this guide with friends!</li>
+          </ul>
+          
+          <div className="footer-credit">
+            This information was sent to {subscriber.name} at {subscriber.email}. 
+            Melbourne Gig Guide - Supporting local music and venues.
+          </div>
         </div>
       </div>
 
@@ -185,6 +285,44 @@ const EmailPreview = ({ content, subscriber = { name: 'Test User', email: 'test@
           max-height: 600px;
           overflow-y: auto;
           box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .preview-actions {
+          margin-bottom: 20px;
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+        
+        .copy-html-btn {
+          background-color: #4caf50;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-weight: 500;
+          cursor: pointer;
+          font-family: 'Poppins', sans-serif;
+          display: flex;
+          align-items: center;
+          transition: background-color 0.2s;
+        }
+        
+        .copy-html-btn:hover {
+          background-color: #43a047;
+        }
+        
+        .copy-status {
+          color: #43a047;
+          font-size: 14px;
+          font-weight: 500;
+        }
+        
+        .email-container {
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          padding: 20px;
+          background-color: #fff;
         }
         
         .email-preview h2 {
