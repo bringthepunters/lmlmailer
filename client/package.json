@@ -2,7 +2,7 @@
   "name": "lml-mailer-client",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://bringthepunters.github.io/lmlmailer/",
+  "homepage": "https://bringthepunters.github.io/lmlmailer",
   "dependencies": {
     "gh-pages": "^6.3.0",
     "react": "^18.2.0",

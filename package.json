@@ -2,10 +2,13 @@
   "name": "lmlmailer-serverless",
   "version": "1.0.0",
   "description": "Melbourne Gig Guide Email System (Serverless)",
+  "homepage": "https://bringthepunters.github.io/lmlmailer",
   "scripts": {
     "start": "cd client && npm start",
     "build": "cd client && npm run build",
-    "test": "cd client && npm test"
+    "test": "cd client && npm test",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d client/build"
   },
   "keywords": [
     "serverless",
@@ -13,5 +16,8 @@
     "lml"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
 }

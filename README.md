@@ -9,6 +9,8 @@ A serverless implementation of the Melbourne Gig Guide Email System. This versio
 - **Live Music Integration**: Fetches gig data from the LML API
 - **Multilingual Support**: Simulates content translation for multiple languages
 - **Persistence**: Uses browser localStorage for data storage
+- **QR Code Integration**: Generates real, scannable QR codes for venue locations
+- **Email HTML Export**: Copy HTML with embedded QR codes for email clients
 
 ## Getting Started
 
@@ -71,6 +73,23 @@ This serverless implementation replaces the Express backend with browser-based a
 - **Data Storage**: Uses browser's localStorage instead of SQLite
 - **API Calls**: Makes direct fetch calls to the LML API from the browser
 - **Content Generation**: Performs all content generation in the browser
+- **QR Code Generation**: Uses QR Server API to generate scannable QR codes for venue locations
+- **Email HTML Export**: Generates complete HTML with embedded QR codes for email clients
+
+### QR Code Feature
+
+The application now includes real QR codes in the email preview:
+
+1. QR codes are generated for each venue's map URL
+2. The codes are displayed in the email preview
+3. Users can copy the complete HTML with embedded QR codes
+4. The HTML can be pasted into email clients to send emails with working QR codes
+
+To test the QR code feature:
+1. Go to the Dashboard
+2. Click "Preview Email with QR Codes"
+3. Use the "Copy HTML for Email Client" button
+4. Paste the HTML into your email client
 
 ## Project Structure
 
