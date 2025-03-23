@@ -8,7 +8,16 @@ import {
 
 // Supported languages
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English' }
+  { code: 'en', name: 'English', description: 'As the primary language spoken in Melbourne, English is essential for the majority of users.' },
+  { code: 'ja', name: 'Japanese', description: 'Support for Japanese speakers.' },
+  { code: 'zh-CN', name: 'Simplified Chinese (Mandarin)', description: 'Given the significant number of Mandarin-speaking visitors, incorporating Simplified Chinese characters will enhance accessibility.' },
+  { code: 'zh-TW', name: 'Traditional Chinese (Cantonese)', description: 'With a notable Cantonese-speaking population, supporting Traditional Chinese characters is advisable.' },
+  { code: 'ar', name: 'Arabic', description: 'Arabic is among the top languages spoken in Australia, making it beneficial to include.' },
+  { code: 'vi', name: 'Vietnamese', description: 'Given the substantial Vietnamese-speaking community, supporting this language is recommended.' },
+  { code: 'es', name: 'Spanish', description: 'Spanish ranks among the top languages spoken in Australia, making it beneficial to include.' },
+  { code: 'de', name: 'German', description: 'Support for German-speaking visitors.' },
+  { code: 'hi', name: 'Hindi', description: 'With a growing number of Hindi speakers, incorporating this language will cater to a broader audience.' },
+  { code: 'ko', name: 'Korean', description: 'Supporting Korean will accommodate visitors from Korea, enhancing their user experience.' }
 ];
 
 function SubscriberForm() {
@@ -74,6 +83,11 @@ function SubscriberForm() {
   
   const handleLanguageChange = (e) => {
     const { value, checked } = e.target;
+    
+    // Don't allow unchecking English
+    if (value === 'en' && !checked) {
+      return;
+    }
     
     if (checked) {
       // Add language if checked
@@ -246,18 +260,23 @@ function SubscriberForm() {
             Select languages for the email content. At least one language is required.
           </p>
           
-          <div className="checkbox-grid">
+          <div className="language-list">
             {SUPPORTED_LANGUAGES.map(language => (
-              <div className="form-check" key={language.code}>
-                <input
-                  type="checkbox"
-                  id={`lang-${language.code}`}
-                  value={language.code}
-                  checked={formData.languages.includes(language.code)}
-                  onChange={handleLanguageChange}
-                  disabled={formData.languages.length === 1 && formData.languages.includes(language.code)}
-                />
-                <label htmlFor={`lang-${language.code}`}>{language.name}</label>
+              <div className="language-item" key={language.code}>
+                <div className="language-checkbox">
+                  <input
+                    type="checkbox"
+                    id={`lang-${language.code}`}
+                    value={language.code}
+                    checked={formData.languages.includes(language.code)}
+                    onChange={handleLanguageChange}
+                    disabled={language.code === 'en'} // Always disable English to keep it selected
+                  />
+                  <label htmlFor={`lang-${language.code}`}>{language.name}</label>
+                </div>
+                {language.description && (
+                  <div className="language-description">{language.description}</div>
+                )}
               </div>
             ))}
           </div>
@@ -300,10 +319,48 @@ function SubscriberForm() {
           flex: 1;
         }
         
-        .checkbox-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-          gap: 0.5rem;
+        .language-list {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+        
+        .language-item {
+          border: 1px solid #eaeaea;
+          border-radius: 8px;
+          padding: 1rem;
+          background-color: #f9f9f9;
+          transition: all 0.2s ease;
+        }
+        
+        .language-item:hover {
+          border-color: #d0d0d0;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .language-checkbox {
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.5rem;
+        }
+        
+        .language-checkbox input {
+          margin-right: 0.5rem;
+        }
+        
+        .language-checkbox label {
+          font-weight: 600;
+          font-size: 1rem;
+          color: #333;
+        }
+        
+        .language-description {
+          font-size: 0.85rem;
+          color: #666;
+          margin-top: 0.25rem;
+          margin-left: 1.5rem;
+          line-height: 1.4;
         }
         
         .map-link {

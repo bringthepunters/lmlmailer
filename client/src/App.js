@@ -33,7 +33,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <div className="logo-container">
-          <img src="/Copy of LML_1_RGB.png" alt="LML Logo" className="logo" />
+          <img src="Copy of LML_1_RGB.png" alt="LML Logo" className="logo" />
           <h1>Melbourne Gig Guide Mailer</h1>
         </div>
         <nav className="main-nav">

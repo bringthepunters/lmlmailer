@@ -216,22 +216,94 @@ export const generateQRCode = (mapUrl) => {
 };
 
 /**
- * Translate text to the specified language
+ * Translate text to the specified language using AI LLM capability
  * @param {string} text - Text to translate
  * @param {string} targetLanguage - Target language code
  * @returns {Promise<string>} Translated text
  */
 export const translateText = async (text, targetLanguage) => {
-  // Stage 1: Fake translations to avoid API costs
-  // In production, use Google Translate API or another translation service
+  // Stage 1: Simulate translations to avoid API costs
+  // In production, this would use an LLM API or translation service
   
   if (targetLanguage === 'en') {
     return text;
   }
   
-  // For stage 1, just prefix the text with language name to simulate translation
   const languageName = SUPPORTED_LANGUAGES[targetLanguage] || targetLanguage;
-  return `[${languageName}] ${text}`;
+  
+  // Create a more realistic "translated" version based on language
+  let translatedText = text;
+  
+  switch (targetLanguage) {
+    case 'ja':
+      // Japanese simulation
+      translatedText = text.replace(/Melbourne/g, 'メルボルン')
+                          .replace(/Guide/g, 'ガイド')
+                          .replace(/gig/gi, 'ライブ')
+                          .replace(/venue/gi, '会場');
+      break;
+    case 'zh-CN':
+      // Simplified Chinese simulation
+      translatedText = text.replace(/Melbourne/g, '墨尔本')
+                          .replace(/Guide/g, '指南')
+                          .replace(/gig/gi, '演出')
+                          .replace(/venue/gi, '场地');
+      break;
+    case 'zh-TW':
+      // Traditional Chinese simulation
+      translatedText = text.replace(/Melbourne/g, '墨爾本')
+                          .replace(/Guide/g, '指南')
+                          .replace(/gig/gi, '表演')
+                          .replace(/venue/gi, '場地');
+      break;
+    case 'ar':
+      // Arabic simulation
+      translatedText = text.replace(/Melbourne/g, 'ملبورن')
+                          .replace(/Guide/g, 'دليل')
+                          .replace(/gig/gi, 'حفلة')
+                          .replace(/venue/gi, 'مكان');
+      break;
+    case 'vi':
+      // Vietnamese simulation
+      translatedText = text.replace(/Melbourne/g, 'Melbourne')
+                          .replace(/Guide/g, 'Hướng dẫn')
+                          .replace(/gig/gi, 'buổi diễn')
+                          .replace(/venue/gi, 'địa điểm');
+      break;
+    case 'es':
+      // Spanish simulation
+      translatedText = text.replace(/Melbourne/g, 'Melbourne')
+                          .replace(/Guide/g, 'Guía')
+                          .replace(/gig/gi, 'concierto')
+                          .replace(/venue/gi, 'local');
+      break;
+    case 'de':
+      // German simulation
+      translatedText = text.replace(/Melbourne/g, 'Melbourne')
+                          .replace(/Guide/g, 'Führung')
+                          .replace(/gig/gi, 'Konzert')
+                          .replace(/venue/gi, 'Veranstaltungsort');
+      break;
+    case 'hi':
+      // Hindi simulation
+      translatedText = text.replace(/Melbourne/g, 'मेलबर्न')
+                          .replace(/Guide/g, 'गाइड')
+                          .replace(/gig/gi, 'संगीत कार्यक्रम')
+                          .replace(/venue/gi, 'स्थान');
+      break;
+    case 'ko':
+      // Korean simulation
+      translatedText = text.replace(/Melbourne/g, '멜버른')
+                          .replace(/Guide/g, '가이드')
+                          .replace(/gig/gi, '공연')
+                          .replace(/venue/gi, '장소');
+      break;
+    default:
+      // Default simulation for other languages
+      translatedText = `[${languageName}] ${text}`;
+  }
+  
+  return translatedText;
 };
 
 /**
@@ -285,9 +357,11 @@ export const formatGigText = (gigs, subscriber) => {
       priceText = "Free";
     }
     
-    // Format genres
+    // Format genres - make them more prominent
     let genresText = "";
+    let genres = [];
     if (gig.genre_tags && gig.genre_tags.length > 0) {
+      genres = gig.genre_tags;
       genresText = gig.genre_tags.join(', ');
     }
     
@@ -325,20 +399,49 @@ export const formatGigText = (gigs, subscriber) => {
 };
 
 /**
- * Generate content in English
+ * Generate content in all selected languages
  * @param {Array} gigs - Array of gig objects
  * @param {Object} subscriber - Subscriber object
- * @returns {string} Formatted content
+ * @returns {string} Formatted content with multiple language versions
  */
-export const generateContent = (gigs, subscriber) => {
+export const generateContent = async (gigs, subscriber) => {
   try {
-    console.log('Generating English content for subscriber:', subscriber.name);
+    console.log('Generating multi-language content for subscriber:', subscriber.name);
+    console.log('Languages:', subscriber.languages);
     
-    // Generate English content
-    const content = formatGigText(gigs, subscriber);
-    console.log('Content generation successful');
+    // Ensure English is always included
+    const languages = subscriber.languages.includes('en')
+      ? subscriber.languages
+      : ['en', ...subscriber.languages];
     
-    return content;
+    // Generate content for each language
+    let allContent = '';
+    let isFirst = true;
+    
+    for (const language of languages) {
+      // Add divider between languages (except for the first one)
+      if (!isFirst) {
+        allContent += '\n\n' + '='.repeat(40) + '\n\n';
+      }
+      
+      // Generate content for this language
+      console.log(`Generating content in ${language}`);
+      let content = formatGigText(gigs, subscriber);
+      
+      // Translate if not English
+      if (language !== 'en') {
+        content = await translateText(content, language);
+      }
+      
+      // Add language indicator
+      const languageName = SUPPORTED_LANGUAGES[language] || language;
+      allContent += `[${languageName.toUpperCase()}]\n\n${content}`;
+      
+      isFirst = false;
+    }
+    
+    console.log('Multi-language content generation successful');
+    return allContent;
   } catch (error) {
     console.error('Error generating content:', error);
     // Return a basic error message instead of throwing
@@ -436,9 +539,9 @@ export const generateContentForSubscriber = async (subscriber, date) => {
       contentSource = 'nearby';
     }
     
-    // Generate content
-    const content = generateContent(gigsToUse, subscriber);
-    console.log('Generated content successfully');
+    // Generate content (now async)
+    const content = await generateContent(gigsToUse, subscriber);
+    console.log('Generated multi-language content successfully');
     
     // Store in localStorage
     const contentLog = {

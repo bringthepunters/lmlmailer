@@ -230,13 +230,15 @@ const EmailPreview = ({ content, subscriber = { name: 'Test User', email: 'test@
                 </div>
               </div>
               
-              {gig.genres.length > 0 && (
-                <div className="gig-genres">
-                  {gig.genres.map((genre, i) => (
+              <div className="gig-genres">
+                {gig.genres.length > 0 ? (
+                  gig.genres.map((genre, i) => (
                     <span key={i} className="genre-tag">{genre}</span>
-                  ))}
-                </div>
-              )}
+                  ))
+                ) : (
+                  <span className="genre-tag genre-tag-default">Live Music</span>
+                )}
+              </div>
               
               <div className="gig-map">
                 <a href={gig.mapUrl} className="map-link" target="_blank" rel="noopener noreferrer">
@@ -417,6 +419,21 @@ const EmailPreview = ({ content, subscriber = { name: 'Test User', email: 'test@
           border-radius: 100px;
           font-size: 12px;
           font-weight: 500;
+          margin-right: 5px;
+          margin-bottom: 5px;
+          display: inline-block;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          transition: all 0.2s ease;
+        }
+        
+        .email-preview .genre-tag:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        
+        .email-preview .genre-tag-default {
+          background-color: #f5f5f5;
+          color: #666;
         }
         
         .email-preview .gig-map {

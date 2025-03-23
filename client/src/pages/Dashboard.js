@@ -85,13 +85,8 @@ function Dashboard() {
       // Generate content for each active subscriber
       for (const subscriber of activeSubscribers) {
         try {
-          // Force English only by ensuring the subscriber has 'en' in languages
-          const subscriberWithEnglish = {
-            ...subscriber,
-            languages: ['en']
-          };
-          
-          await generateContentForSubscriber(subscriberWithEnglish, date);
+          // Use the subscriber's selected languages, keeping English as default
+          await generateContentForSubscriber(subscriber, date);
           successCount++;
         } catch (error) {
           console.error(`Error generating content for ${subscriber.name}:`, error);
