@@ -10,6 +10,15 @@ const cors = require('cors');
 const path = require('path');
 const { initDatabase } = require('./database');
 const cron = require('node-cron');
+const dotenv = require('dotenv');
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Verify API keys at startup
+if (!process.env.OPENAI_API_KEY) {
+  console.warn('WARNING: OPENAI_API_KEY is not set. Translation features will be disabled.');
+}
 
 // Create Express app
 const app = express();
@@ -33,6 +42,7 @@ initDatabase()
 // API Routes
 app.use('/api/subscribers', require('./routes/subscribers'));
 app.use('/api/content', require('./routes/content'));
+app.use('/api/translate', require('./routes/translation'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

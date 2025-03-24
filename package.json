@@ -8,7 +8,9 @@
     "build": "cd client && npm run build",
     "test": "cd client && npm test",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d client/build --dest ."
+    "deploy": "gh-pages -d client/build --dest .",
+    "server": "node server/server.js",
+    "dev": "nodemon server/server.js"
   },
   "keywords": [
     "serverless",
@@ -17,7 +19,9 @@
   ],
   "author": "",
   "license": "ISC",
+  "dependencies": {},
   "devDependencies": {
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "nodemon": "^2.0.22"
   }
 }

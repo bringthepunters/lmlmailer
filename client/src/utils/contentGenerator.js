@@ -216,94 +216,36 @@ export const generateQRCode = (mapUrl) => {
 };
 
 /**
- * Translate text to the specified language using AI LLM capability
+ * Translate text to the specified language using browser-based LLM
  * @param {string} text - Text to translate
  * @param {string} targetLanguage - Target language code
  * @returns {Promise<string>} Translated text
  */
 export const translateText = async (text, targetLanguage) => {
-  // Stage 1: Simulate translations to avoid API costs
-  // In production, this would use an LLM API or translation service
+  // Import browser translation service - dynamically to avoid circular dependencies
+  const { translateWithBrowserLLM } = await import('../services/browserTranslationService');
   
+  // No translation needed for English
   if (targetLanguage === 'en') {
     return text;
   }
   
   const languageName = SUPPORTED_LANGUAGES[targetLanguage] || targetLanguage;
   
-  // Create a more realistic "translated" version based on language
-  let translatedText = text;
-  
-  switch (targetLanguage) {
-    case 'ja':
-      // Japanese simulation
-      translatedText = text.replace(/Melbourne/g, 'メルボルン')
-                          .replace(/Guide/g, 'ガイド')
-                          .replace(/gig/gi, 'ライブ')
-                          .replace(/venue/gi, '会場');
-      break;
-    case 'zh-CN':
-      // Simplified Chinese simulation
-      translatedText = text.replace(/Melbourne/g, '墨尔本')
-                          .replace(/Guide/g, '指南')
-                          .replace(/gig/gi, '演出')
-                          .replace(/venue/gi, '场地');
-      break;
-    case 'zh-TW':
-      // Traditional Chinese simulation
-      translatedText = text.replace(/Melbourne/g, '墨爾本')
-                          .replace(/Guide/g, '指南')
-                          .replace(/gig/gi, '表演')
-                          .replace(/venue/gi, '場地');
-      break;
-    case 'ar':
-      // Arabic simulation
-      translatedText = text.replace(/Melbourne/g, 'ملبورن')
-                          .replace(/Guide/g, 'دليل')
-                          .replace(/gig/gi, 'حفلة')
-                          .replace(/venue/gi, 'مكان');
-      break;
-    case 'vi':
-      // Vietnamese simulation
-      translatedText = text.replace(/Melbourne/g, 'Melbourne')
-                          .replace(/Guide/g, 'Hướng dẫn')
-                          .replace(/gig/gi, 'buổi diễn')
-                          .replace(/venue/gi, 'địa điểm');
-      break;
-    case 'es':
-      // Spanish simulation
-      translatedText = text.replace(/Melbourne/g, 'Melbourne')
-                          .replace(/Guide/g, 'Guía')
-                          .replace(/gig/gi, 'concierto')
-                          .replace(/venue/gi, 'local');
-      break;
-    case 'de':
-      // German simulation
-      translatedText = text.replace(/Melbourne/g, 'Melbourne')
-                          .replace(/Guide/g, 'Führung')
-                          .replace(/gig/gi, 'Konzert')
-                          .replace(/venue/gi, 'Veranstaltungsort');
-      break;
-    case 'hi':
-      // Hindi simulation
-      translatedText = text.replace(/Melbourne/g, 'मेलबर्न')
-                          .replace(/Guide/g, 'गाइड')
-                          .replace(/gig/gi, 'संगीत कार्यक्रम')
-                          .replace(/venue/gi, 'स्थान');
-      break;
-    case 'ko':
-      // Korean simulation
-      translatedText = text.replace(/Melbourne/g, '멜버른')
-                          .replace(/Guide/g, '가이드')
-                          .replace(/gig/gi, '공연')
-                          .replace(/venue/gi, '장소');
-      break;
-    default:
-      // Default simulation for other languages
-      translatedText = `[${languageName}] ${text}`;
+  try {
+    // Log the translation attempt
+    console.log(`Translating to ${languageName}...`);
+    
+    // Use our browser-compatible translation service
+    return await translateWithBrowserLLM(text, targetLanguage);
+  } catch (error) {
+    console.error(`Translation to ${languageName} failed:`, error);
+    
+    // Fallback to a very simple translation if even our browser service fails
+    console.log(`Using emergency fallback translation for ${languageName}`);
+    
+    return `[${languageName}]\n\n` + text;
   }
-  
-  return translatedText;
 };
 
 /**
@@ -341,6 +283,7 @@ export const formatGigText = (gigs, subscriber) => {
   
   const musicSceneDescription = generateMelbourneMusicSceneDescription();
   
+  // Special handling for Arabic translations that will be done later
   let text = `=== MELBOURNE GIG GUIDE - ${date} ===\n\n`;
   text += `${musicSceneDescription}\n\n`;
   text += `--- GIGS NEAR YOU ---\n\n`;
@@ -418,6 +361,9 @@ export const generateContent = async (gigs, subscriber) => {
     let allContent = '';
     let isFirst = true;
     
+    // First generate the English content as a base
+    const baseContent = formatGigText(gigs, subscriber);
+    
     for (const language of languages) {
       // Add divider between languages (except for the first one)
       if (!isFirst) {
@@ -426,21 +372,60 @@ export const generateContent = async (gigs, subscriber) => {
       
       // Generate content for this language
       console.log(`Generating content in ${language}`);
-      let content = formatGigText(gigs, subscriber);
       
-      // Translate if not English
-      if (language !== 'en') {
-        content = await translateText(content, language);
+      // For English, use the base content directly
+      if (language === 'en') {
+        allContent += `[ENGLISH]\n\n${baseContent}`;
+      } else {
+        // For other languages, translate the entire content at once
+        try {
+          // Import translation service dynamically
+          const { translateWithBrowserLLM } = await import('../services/browserTranslationService');
+          
+          // Translate the entire content
+          console.log(`Translating full content to ${language}...`);
+          let translatedContent = await translateWithBrowserLLM(baseContent, language);
+          
+          // Check for incomplete translation
+          if (translatedContent.endsWith('Stil partial') ||
+              translatedContent.includes('Stil partial')) {
+            console.error(`Translation to ${language} appears to be incomplete`);
+            // Remove the "Stil partial" text
+            translatedContent = translatedContent.replace('Stil partial', '');
+            // Try to complete the translation if it seems cut off
+            if (translatedContent.length < baseContent.length / 2) {
+              console.warn(`Translation to ${language} seems too short, using fallback`);
+              translatedContent = `[${language.toUpperCase()}]\n\n${baseContent}`;
+            }
+          }
+          
+          // Add language indicator
+          const languageName = SUPPORTED_LANGUAGES[language] || language;
+          allContent += `[${languageName.toUpperCase()}]\n\n${translatedContent}`;
+        } catch (translationError) {
+          console.error(`Translation to ${language} failed:`, translationError);
+          // If translation fails, add a note and the original content
+          const languageName = SUPPORTED_LANGUAGES[language] || language;
+          allContent += `[${languageName.toUpperCase()} - Translation failed]\n\n${baseContent}`;
+        }
       }
-      
-      // Add language indicator
-      const languageName = SUPPORTED_LANGUAGES[language] || language;
-      allContent += `[${languageName.toUpperCase()}]\n\n${content}`;
       
       isFirst = false;
     }
-    
     console.log('Multi-language content generation successful');
+    console.log(`Total content length: ${allContent.length} characters`);
+    
+    // Check if content is suspiciously short
+    if (allContent.length < 500) {
+      console.warn('Warning: Generated content is unusually short, might be incomplete');
+    }
+    
+    // Check if content ends abruptly
+    if (allContent.endsWith('...') || allContent.endsWith('Stil partial')) {
+      console.error('Error: Content appears to be truncated');
+    }
+    
+    return allContent;
     return allContent;
   } catch (error) {
     console.error('Error generating content:', error);

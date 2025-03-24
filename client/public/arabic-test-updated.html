@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arabic Translation Test (Updated)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            direction: ltr;
+        }
+        .arabic {
+            direction: rtl;
+            text-align: right;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .result {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Arabic Translation Test (Updated)</h1>
+    
+    <h2>Test Content</h2>
+    <pre id="testContent">
+=== MELBOURNE GIG GUIDE - Sunday, March 23, 2025 ===
+
+Melbourne's vibrant live music scene offers everything from intimate jazz clubs to stadium rock concerts. With over 460 live music venues, it's one of the world's leading music cities.
+
+--- GIGS NEAR YOU ---
+
+▶ 1. QUEENS OF THE WEST LIVE AT THE CATFISH
+   🏢 The Catfish | 1.4 km away
+   📍 30 Gertrude St, Fitzroy
+   🕒 16:00 | 💲 Check venue
+   🗺️ https://maps.app.goo.gl/9y94NxuVvW5kefuQ8
+   QR: https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fmaps.app.goo.gl%2F9y94NxuVvW5kefuQ8&margin=1&qzone=1
+   ----------------------
+▶ 2. Kyle Brew
+   🏢 The Standard Hotel | 1.9 km away
+   📍 419 Fitzroy St Fitzroy
+   🕒 17:00 | 💲 Check venue
+   🗺️ https://www.google.com/maps/place/The+Standard+Hotel/@-37.8007371,144.9738336,17z/data=!4m10!1m2!2m1!1sthe+standard+hotel!3m6!1s0x6ad642d8d9bd0aeb:0x4b995a3f5ae64d05!8m2!3d-37.8007371!4d144.9768234!15sChJ0aGUgc3RhbmRhcmQgaG90ZWwiA4gBAVoUIhJ0aGUgc3RhbmRhcmQgaG90ZWySAQNwdWLgAQA!16s%2Fg%2F1tczw22p?entry=ttu
+   QR: https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https%3A%2F%2Fwww.google.com%2Fmaps%2Fplace%2FThe%2BStandard%2BHotel%2F%40-37.8007371%2C144.9738336%2C17z%2Fdata%3D!4m10!1m2!2m1!1sthe%2Bstandard%2Bhotel!3m6!1s0x6ad642d8d9bd0aeb%3A0x4b995a3f5ae64d05!8m2!3d-37.8007371!4d144.9768234!15sChJ0aGUgc3RhbmRhcmQgaG90ZWwiA4gBAVoUIhJ0aGUgc3RhbmRhcmQgaG90ZWySAQNwdWLgAQA!16s%252Fg%252F1tczw22p%3Fentry%3Dttu&margin=1&qzone=1
+   ----------------------
+
+=== HOW TO USE ===
+• View on mobile to scan QR codes directly from screen
+• QR codes link to venue locations on Google Maps
+• Share this guide with friends!
+
+---
+This information was sent to Test User at test@example.com.
+Melbourne Gig Guide - Supporting local music and venues.
+    </pre>
+
+    <button id="translateBtn">Translate to Arabic</button>
+    
+    <div class="result">
+        <h2>Translation Result</h2>
+        <pre id="translationResult" class="arabic">Click the button to see the translation result</pre>
+    </div>
+
+    <script>
+        // Mock implementation of the translation service
+        const sentenceTranslations = {
+            'ar': { // Arabic - comprehensive full phrases
+                'Melbourne\'s vibrant live music scene offers everything from intimate jazz clubs to stadium rock concerts.': 'تقدم ساحة الموسيقى الحية النابضة بالحياة في ملبورن كل شيء من نوادي الجاز الحميمة إلى حفلات الروك في الملاعب.',
+                'With over 460 live music venues, it\'s one of the world\'s leading music cities.': 'مع أكثر من 460 قاعة حفلات موسيقية حية، تعد واحدة من المدن الموسيقية الرائدة في العالم.',
+                'MELBOURNE GIG GUIDE': 'دليل العروض الموسيقية في ملبورن',
+                'GIGS NEAR YOU': 'عروض موسيقية بالقرب منك',
+                'HOW TO USE': 'كيفية الاستخدام',
+                'View on mobile to scan QR codes directly from screen': 'اعرض على الهاتف المحمول لمسح رموز QR مباشرة من الشاشة',
+                'QR codes link to venue locations on Google Maps': 'رموز QR تربط بمواقع قاعات الحفلات على خرائط جوجل',
+                'Share this guide with friends!': 'شارك هذا الدليل مع الأصدقاء!',
+                'This information was sent to': 'تم إرسال هذه المعلومات إلى',
+                'Melbourne Gig Guide - Supporting local music and venues.': 'دليل العروض الموسيقية في ملبورن - دعم الموسيقى المحلية وقاعات الحفلات.',
+                'km away': 'كم بعيدا',
+                'Check venue': 'تحقق من قاعة الحفلات',
+                'Free': 'مجاني',
+                'TBA': 'سيتم الإعلان لاحقًا'
+            }
+        };
+
+        const properNameTranslations = {
+            'ar': {
+                'Melbourne': 'ملبورن',
+                'Fitzroy': 'فيتزروي',
+                'Richmond': 'ريتشموند',
+                'venue': 'قاعة الحفلات',
+                'venues': 'قاعات الحفلات',
+                'gig': 'عرض موسيقي',
+                'gigs': 'عروض موسيقية',
+                'concert': 'حفلة موسيقية',
+                'concerts': 'حفلات موسيقية',
+                'music': 'موسيقى',
+                'musical': 'موسيقي',
+                'guide': 'دليل',
+                'near': 'بالقرب من',
+                'you': 'منك',
+                'check': 'تحقق من',
+            }
+        };
+
+        function translateToArabic(text) {
+            // Split the text into sections
+            const sections = {
+                header: '',
+                description: '',
+                gigsHeader: '',
+                gigs: [],
+                howToUse: '',
+                footer: ''
+            };
+
+            // Extract sections using regex
+            const headerMatch = text.match(/=== MELBOURNE GIG GUIDE - (.+?) ===/);
+            if (headerMatch) {
+                sections.date = headerMatch[1];
+            }
+
+            const descriptionMatch = text.match(/=== MELBOURNE GIG GUIDE - .+? ===\s+\n\s*(.+?)(?=\s*\n\s*---)/s);
+            if (descriptionMatch) {
+                sections.description = descriptionMatch[1].trim();
+            }
+
+            // Extract gigs
+            const gigsRegex = /▶ (\d+)\. (.+)[\s\S]*?🏢 (.+) \| ([\d.]+ km away)[\s\S]*?📍 (.+)[\s\S]*?🕒 (.+) \| 💲 (.+)[\s\S]*?(?:🎵 (.+)[\s\S]*?)?🗺️ (.+)[\s\S]*?QR: (.+)/g;
+            let gigMatch;
+            while ((gigMatch = gigsRegex.exec(text)) !== null) {
+                sections.gigs.push({
+                    number: gigMatch[1],
+                    name: gigMatch[2],
+                    venue: gigMatch[3],
+                    distance: gigMatch[4],
+                    address: gigMatch[5],
+                    time: gigMatch[6],
+                    price: gigMatch[7],
+                    genres: gigMatch[8] ? gigMatch[8].split(',').map(g => g.trim()) : [],
+                    mapUrl: gigMatch[9],
+                    qrUrl: gigMatch[10]
+                });
+            }
+
+            // Extract how to use section
+            const howToUseMatch = text.match(/=== HOW TO USE ===\s+\n([\s\S]*?)(?=\s*\n\s*---)/);
+            if (howToUseMatch) {
+                sections.howToUse = howToUseMatch[1].trim();
+            }
+
+            // Extract footer
+            const footerMatch = text.match(/---\s+\n([\s\S]*?)$/);
+            if (footerMatch) {
+                sections.footer = footerMatch[1].trim();
+            }
+
+            // Now translate each section
+            let translatedContent = '';
+
+            // Header (with the date preserved)
+            translatedContent += `=== دليل العروض الموسيقية في ملبورن - ${sections.date} ===\n\n`;
+
+            // Description
+            translatedContent += translateParagraph(sections.description, 'ar') + '\n\n';
+
+            // Gigs near you header
+            translatedContent += '--- عروض موسيقية بالقرب منك ---\n\n';
+
+            // Gigs
+            sections.gigs.forEach((gig, index) => {
+                let translatedGig = `▶ ${gig.number}. ${gig.name}\n`;
+                translatedGig += `   🏢 ${gig.venue} | ${gig.distance.replace('km away', 'كم بعيدا')}\n`;
+                translatedGig += `   📍 ${gig.address}\n`;
+                translatedGig += `   🕒 ${gig.time} | 💲 ${translatePhrase(gig.price, 'ar')}\n`;
+                
+                if (gig.genres && gig.genres.length > 0) {
+                    translatedGig += `   🎵 ${gig.genres.join(', ')}\n`;
+                }
+                
+                translatedGig += `   🗺️ ${gig.mapUrl}\n`;
+                
+                // Fix for Arabic translation - ensure we're using the correct terms
+                translatedGig = translatedGig.replace(/مكان/g, 'قاعة الحفلات');
+                translatedGig = translatedGig.replace(/مكانًا/g, 'قاعة حفلات');
+                translatedGig = translatedGig.replace(/حفلة/g, 'عرض موسيقي');
+                translatedGig = translatedGig.replace(/حفلات/g, 'عروض موسيقية');
+                
+                translatedGig += `   رمز الاستجابة السريعة: ${gig.qrUrl}\n`;
+                translatedGig += '   ----------------------\n';
+                
+                translatedContent += translatedGig;
+            });
+
+            // How to use
+            translatedContent += '\n=== كيفية الاستخدام ===\n';
+            const howToUseLines = sections.howToUse.split('\n');
+            howToUseLines.forEach(line => {
+                if (line.trim()) {
+                    translatedContent += translatePhrase(line.trim(), 'ar') + '\n';
+                }
+            });
+
+            // Footer
+            translatedContent += '\n---\n';
+            const footerLines = sections.footer.split('\n');
+            if (footerLines.length >= 2) {
+                const subscriberInfo = footerLines[0];
+                const subscriberMatch = subscriberInfo.match(/This information was sent to (.+) at (.+)\./);
+                if (subscriberMatch) {
+                    translatedContent += `تم إرسال هذه المعلومات إلى ${subscriberMatch[1]} على ${subscriberMatch[2]}.\n`;
+                } else {
+                    translatedContent += translatePhrase(subscriberInfo, 'ar') + '\n';
+                }
+                
+                translatedContent += 'دليل العروض الموسيقية في ملبورن - دعم الموسيقى المحلية وقاعات الحفلات.\n';
+            } else {
+                footerLines.forEach(line => {
+                    if (line.trim()) {
+                        translatedContent += translatePhrase(line.trim(), 'ar') + '\n';
+                    }
+                });
+            }
+
+            // Final pass to ensure all instances are properly translated
+            translatedContent = translatedContent.replace(/مكان/g, 'قاعة الحفلات');
+            translatedContent = translatedContent.replace(/مكانًا/g, 'قاعة حفلات');
+            translatedContent = translatedContent.replace(/حفلة/g, 'عرض موسيقي');
+            translatedContent = translatedContent.replace(/حفلات/g, 'عروض موسيقية');
+            translatedContent = translatedContent.replace(/دليل حفلات/g, 'دليل العروض الموسيقية');
+
+            return translatedContent;
+        }
+
+        function translatePhrase(phrase, targetLang) {
+            // Check if we have a direct translation
+            if (sentenceTranslations[targetLang] && sentenceTranslations[targetLang][phrase]) {
+                return sentenceTranslations[targetLang][phrase];
+            }
+            
+            // Try to translate proper names
+            let translatedPhrase = phrase;
+            if (properNameTranslations[targetLang]) {
+                for (const [original, translated] of Object.entries(properNameTranslations[targetLang])) {
+                    const regex = new RegExp(`\\b${original}\\b`, 'gi');
+                    translatedPhrase = translatedPhrase.replace(regex, translated);
+                }
+            }
+            
+            // If no direct translation found, return original with [AR] prefix
+            if (translatedPhrase === phrase) {
+                return `[${targetLang.toUpperCase()}] ${phrase}`;
+            }
+            
+            return translatedPhrase;
+        }
+
+        function translateParagraph(paragraph, targetLang) {
+            // Split paragraph into sentences
+            const sentences = paragraph.split(/(?<=[.!?])\s+/);
+            
+            // Translate each sentence
+            const translatedSentences = sentences.map(sentence => 
+                translatePhrase(sentence, targetLang)
+            );
+            
+            // Join sentences back together
+            return translatedSentences.join(' ');
+        }
+
+        document.getElementById('translateBtn').addEventListener('click', function() {
+            const testContent = document.getElementById('testContent').textContent;
+            const translatedContent = translateToArabic(testContent);
+            document.getElementById('translationResult').textContent = translatedContent;
+        });
+    </script>
+</body>
+</html>
