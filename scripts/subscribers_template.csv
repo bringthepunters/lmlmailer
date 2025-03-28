@@ -1,0 +1,6 @@
+ID,Name,Email,Language,Latitude,Longitude,Active
+1,John Smith,john@example.com,"en,es",-37.8136,144.9631,TRUE
+2,Marie Chen,marie@example.com,"en,zh-CN",-37.8156,144.9721,TRUE
+3,Ahmed Hassan,ahmed@example.com,"en,ar",-37.7963,144.9778,TRUE
+4,Yuki Tanaka,yuki@example.com,"en,ja",-37.8236,144.9975,FALSE
+5,Sofia Rodriguez,sofia@example.com,"es,en",-37.8119,144.9567,TRUE

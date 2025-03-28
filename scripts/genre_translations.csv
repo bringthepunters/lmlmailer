@@ -1,0 +1,181 @@
+Key,LanguageCode,TranslatedText
+Rock,zh-CN,摇滚
+Rock,es,Rock
+Rock,ja,ロック
+Rock,ar,روك
+Indie,zh-CN,独立
+Indie,es,Indie
+Indie,ja,インディー
+Indie,ar,إندي
+Jazz,zh-CN,爵士
+Jazz,es,Jazz
+Jazz,ja,ジャズ
+Jazz,ar,جاز
+Pop,zh-CN,流行
+Pop,es,Pop
+Pop,ja,ポップ
+Pop,ar,بوب
+Hip Hop,zh-CN,嘻哈
+Hip Hop,es,Hip Hop
+Hip Hop,ja,ヒップホップ
+Hip Hop,ar,هيب هوب
+Electronic,zh-CN,电子
+Electronic,es,Electrónica
+Electronic,ja,エレクトロニック
+Electronic,ar,إلكترونية
+Folk,zh-CN,民谣
+Folk,es,Folk
+Folk,ja,フォーク
+Folk,ar,فولك
+Classical,zh-CN,古典
+Classical,es,Clásica
+Classical,ja,クラシック
+Classical,ar,كلاسيكية
+R&B,zh-CN,节奏布鲁斯
+R&B,es,R&B
+R&B,ja,R&B
+R&B,ar,آر آند بي
+Reggae,zh-CN,雷鬼
+Reggae,es,Reggae
+Reggae,ja,レゲエ
+Reggae,ar,ريغي
+Blues,zh-CN,蓝调
+Blues,es,Blues
+Blues,ja,ブルース
+Blues,ar,بلوز
+Country,zh-CN,乡村
+Country,es,Country
+Country,ja,カントリー
+Country,ar,كانتري
+Metal,zh-CN,金属
+Metal,es,Metal
+Metal,ja,メタル
+Metal,ar,ميتال
+Punk,zh-CN,朋克
+Punk,es,Punk
+Punk,ja,パンク
+Punk,ar,بانك
+Soul,zh-CN,灵魂
+Soul,es,Soul
+Soul,ja,ソウル
+Soul,ar,سول
+Funk,zh-CN,放克
+Funk,es,Funk
+Funk,ja,ファンク
+Funk,ar,فانك
+Alternative,zh-CN,另类
+Alternative,es,Alternativo
+Alternative,ja,オルタナティブ
+Alternative,ar,بديل
+House,zh-CN,浩室
+House,es,House
+House,ja,ハウス
+House,ar,هاوس
+Techno,zh-CN,电子舞曲
+Techno,es,Techno
+Techno,ja,テクノ
+Techno,ar,تكنو
+Ambient,zh-CN,氛围
+Ambient,es,Ambient
+Ambient,ja,アンビエント
+Ambient,ar,أمبينت
+Disco,zh-CN,迪斯科
+Disco,es,Disco
+Disco,ja,ディスコ
+Disco,ar,ديسكو
+Latin,zh-CN,拉丁
+Latin,es,Latino
+Latin,ja,ラテン
+Latin,ar,لاتيني
+World,zh-CN,世界音乐
+World,es,World
+World,ja,ワールド
+World,ar,عالمية
+Experimental,zh-CN,实验
+Experimental,es,Experimental
+Experimental,ja,エクスペリメンタル
+Experimental,ar,تجريبية
+Gospel,zh-CN,福音
+Gospel,es,Gospel
+Gospel,ja,ゴスペル
+Gospel,ar,جوسبل
+Grunge,zh-CN,垃圾摇滚
+Grunge,es,Grunge
+Grunge,ja,グランジ
+Grunge,ar,غرانج
+New Wave,zh-CN,新浪潮
+New Wave,es,New Wave
+New Wave,ja,ニューウェイブ
+New Wave,ar,نيو ويف
+Ska,zh-CN,斯卡
+Ska,es,Ska
+Ska,ja,スカ
+Ska,ar,سكا
+Trap,zh-CN,陷阱音乐
+Trap,es,Trap
+Trap,ja,トラップ
+Trap,ar,تراب
+Drum and Bass,zh-CN,鼓打贝斯
+Drum and Bass,es,Drum and Bass
+Drum and Bass,ja,ドラムンベース
+Drum and Bass,ar,درام آند بيس
+Dubstep,zh-CN,回响贝斯
+Dubstep,es,Dubstep
+Dubstep,ja,ダブステップ
+Dubstep,ar,دابستيب
+K-pop,zh-CN,韩国流行
+K-pop,es,K-pop
+K-pop,ja,K-POP
+K-pop,ar,كي-بوب
+J-pop,zh-CN,日本流行
+J-pop,es,J-pop
+J-pop,ja,J-POP
+J-pop,ar,جي-بوب
+Salsa,zh-CN,萨尔萨
+Salsa,es,Salsa
+Salsa,ja,サルサ
+Salsa,ar,سالسا
+Tango,zh-CN,探戈
+Tango,es,Tango
+Tango,ja,タンゴ
+Tango,ar,تانغو
+Bachata,zh-CN,巴恰塔
+Bachata,es,Bachata
+Bachata,ja,バチャータ
+Bachata,ar,باتشاتا
+Bossa Nova,zh-CN,博萨诺瓦
+Bossa Nova,es,Bossa Nova
+Bossa Nova,ja,ボサノバ
+Bossa Nova,ar,بوسا نوفا
+Venue,zh-CN,场地
+Venue,es,Lugar
+Venue,ja,会場
+Venue,ar,مكان الحفل
+Address,zh-CN,地址
+Address,es,Dirección
+Address,ja,住所
+Address,ar,العنوان
+Time/Price,zh-CN,时间/价格
+Time/Price,es,Hora/Precio
+Time/Price,ja,時間/料金
+Time/Price,ar,الوقت/السعر
+Genres,zh-CN,音乐类型
+Genres,es,Géneros
+Genres,ja,ジャンル
+Genres,ar,الأنواع
+View on Map,zh-CN,在地图上查看
+View on Map,es,Ver en el mapa
+View on Map,ja,地図で見る
+View on Map,ar,عرض على الخريطة
+Check venue,zh-CN,查看场地
+Check venue,es,Consultar lugar
+Check venue,ja,会場を確認
+Check venue,ar,تحقق من المكان
+Free,zh-CN,免费
+Free,es,Gratis
+Free,ja,無料
+Free,ar,مجاني
+km away,zh-CN,公里远
+km away,es,km de distancia
+km away,ja,km離れた
+km away,ar,كم بعيد
